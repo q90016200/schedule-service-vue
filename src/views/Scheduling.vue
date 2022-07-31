@@ -17,9 +17,22 @@
 import {
     DocumentAdd,
 } from '@element-plus/icons-vue'
-import { reactive } from 'vue';
+import { reactive, onBeforeMount } from 'vue';
+import { queryJob } from '../apis/api.js'
 
 var data = reactive({})
+
+onBeforeMount(() => {
+    queryJob().then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+})
+
+
+
+
 </script>
 
 <style>
