@@ -3,8 +3,10 @@ import axios from 'axios'
 
 axios.defaults.timeout = 5000;
 const instance = axios.create({
-    baseURL: import.meta.env.API_DOMAIN
+    baseURL: import.meta.env.VITE_BACKEND_HOST
 });
+
+console.log("VITE_BACKEND_HOST:"+import.meta.env.VITE_BACKEND_HOST)
 
 // request 攔截器
 instance.interceptors.request.use((config) => {
@@ -76,4 +78,4 @@ instance.interceptors.response.use(function (response) {
 // }
 
 
-export const queryJob = data => instance.get("/job", data)
+export const queryJob = data => instance.get("/api/job", data)
