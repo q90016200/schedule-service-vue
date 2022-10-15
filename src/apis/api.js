@@ -78,4 +78,4 @@ instance.interceptors.response.use(function (response) {
 // }
 
 
-export const queryJob = data => instance.get("/api/job", data)
+export const queryJob = data => instance.get("/api/jobs", data)
