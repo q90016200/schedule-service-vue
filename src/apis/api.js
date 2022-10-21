@@ -3,10 +3,13 @@ import axios from 'axios'
 
 axios.defaults.timeout = 5000;
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_HOST
+    baseURL: import.meta.env.VITE_BACKEND_HOST,
+    headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+    }
 });
 
-console.log("VITE_BACKEND_HOST:"+import.meta.env.VITE_BACKEND_HOST)
+// console.log("VITE_BACKEND_HOST:" + import.meta.env.VITE_BACKEND_HOST)
 
 // request 攔截器
 instance.interceptors.request.use((config) => {
@@ -22,7 +25,7 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    console.log(response.status);
+    // console.log(response.status);
     return response
 }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -79,3 +82,6 @@ instance.interceptors.response.use(function (response) {
 
 
 export const queryJob = data => instance.get("/api/jobs", data)
+export const addJob = data => instance.post("/api/jobs", data)
+export const editJob = (id, data) => instance.put("/api/jobs/" + id, data)
+export const delJob = (id) => instance.delete("/api/jobs/" + id)

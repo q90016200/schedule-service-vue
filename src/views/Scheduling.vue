@@ -17,8 +17,8 @@
                 </template>
                 <template #default="scope">
                     <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button> -->
-                    <el-button size="small" @click="handleJobFormEdit(scope.$index, scope.row)">Edit</el-button>
-                    <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                    <el-button size="small" @click="handleJobFormEditDelete(scope.$index, scope.row, 'edit')">Edit</el-button>
+                    <el-button size="small" type="danger" @click="handleJobFormEditDelete(scope.$index, scope.row, 'delete')">Delete</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -26,15 +26,14 @@
 
 <div class="pt-2">
 
-    <cron-light v-model="cronText" @error="error=$event"></cron-light>
-    <div class="text-lightest pt-2">cron expression: {{cronText}}</div>
+
 
 </div>
     <!-- <el-button text @click="dialogVisible = true">click to open the Dialog</el-button> -->
 
     <!-- 新增/編輯 燈箱 start -->
     <el-dialog v-model="dialogJobFormVisible" :title="jobFormMethod">
-        <el-form  label-width="100px" :model="jobForm" style="max-width: 460px">
+        <el-form  label-width="100px" :model="jobForm" style="max-width: 500px">
             <el-form-item label="name" >
                 <el-input v-model="jobForm.name" type="text" show-word-limit maxlength="100" />
             </el-form-item>
@@ -42,10 +41,11 @@
                 <el-input v-model="jobForm.path" />
             </el-form-item>
             <el-form-item label="cron">
-                <el-input v-model="jobForm.cron" type="text" show-word-limit maxlength="30" />
+                <CronLight v-model="jobForm.cron" :periods="cronLightConfig.periods"></CronLight>
+                <el-input v-model="jobForm.cron" type="text" show-word-limit maxlength="30" disabled/>
             </el-form-item>
             <el-form-item label="status" >
-                <el-switch v-model="jobFormStatus" />
+                <el-switch v-model="jobFormStatus" active-text="running" inactive-text="stopped" />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -62,10 +62,9 @@
 import {
     DocumentAdd,
 } from '@element-plus/icons-vue'
-
+import QS from 'qs';
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue';
-import { queryJob } from '../apis/api.js'
-
+import { queryJob, addJob, editJob, delJob } from '../apis/api.js'
 
 const tableData = reactive({value:[]})
 // const tableData = reactive([])
@@ -83,17 +82,25 @@ const filterTableData = computed(() =>
     )
 )
 
-const cronText = ref()
 const dialogJobFormVisible = ref(false)
 const jobFormStatus = ref(false)
 const jobFormMethod = ref("add")
 const jobForm = reactive({
     "id": 0,
     "name": "",
-    "cron": "*/1 * * * *",
+    "cron": "* * * * *",
     "path": "",
     "status": "",
 })
+
+const cronLightConfig = {
+    periods: [
+        { id: 'week', value: ['dayOfWeek', 'hour', 'minute'] },
+        { id: 'day', value: ['hour', 'minute'] },
+        { id: 'hour', value: ['minute'] },
+        { id: 'minute', value: [] },
+    ]
+}
 
 onBeforeMount(() => {
     fetchNewJobs()
@@ -127,13 +134,14 @@ const handleJobFormAdd = () => {
     jobForm.id = 0
     jobForm.name = ""
     jobForm.path = ""
-    jobForm.cron = "*/1 * * * *"
+    jobForm.cron = "* * * * *"
+    jobForm.status = "stopped"
     jobFormStatus.value = false
 }
 
-const handleJobFormEdit = (index, row) => {
+const handleJobFormEditDelete = (index, row, method) => {
     dialogJobFormVisible.value = true
-    jobFormMethod.value = "edit"
+    jobFormMethod.value = method
 
     jobForm.id = row.id
     jobForm.name = row.name
@@ -155,7 +163,48 @@ const handleJobFormEdit = (index, row) => {
 const handleJobFormConfirm = () => {
     dialogJobFormVisible.value = false;
 
+    if (jobFormMethod.value == "add") {
+        let data = QS.stringify({
+            "name": jobForm.name,
+            "method": "http",
+            "cron": jobForm.cron,
+            "path": jobForm.path,
+        })
+        addJob(data).then(res => {
+            console.log(res.data)
+            fetchNewJobs()
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            // dialogJobFormVisible.value = true
+        })
+    } else if (jobFormMethod.value == "edit") {
+        let data = QS.stringify({
+            "status": jobForm.status,
+            "name": jobForm.name,
+            "method": "http",
+            "cron": jobForm.cron,
+            "path": jobForm.path,
+        })
 
+        editJob(jobForm.id, data).then(res => {
+            console.log(res.data)
+            fetchNewJobs()
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            // dialogJobFormVisible.value = true
+        })
+    } else if (jobFormMethod.value == "delete") {
+        delJob(jobForm.id).then(res => {
+            console.log(res.data)
+            fetchNewJobs()
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            // dialogJobFormVisible.value = true
+        })
+    }
 }
 
 </script>
