@@ -51,10 +51,13 @@
           type="text"
           show-word-limit
           maxlength="100"
+          required="required"
         />
       </el-form-item>
       <el-form-item label="path">
-        <el-input v-model="jobForm.path" />
+        <el-input
+          v-model="jobForm.path"
+        />
       </el-form-item>
       <el-form-item label="cron">
         <cron-element-plus
@@ -67,7 +70,6 @@
           type="text"
           show-word-limit
           maxlength="30"
-          disabled
         />
       </el-form-item>
       <el-form-item label="status">
