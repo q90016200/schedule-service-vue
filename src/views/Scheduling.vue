@@ -1,24 +1,26 @@
 <template>
-  <el-row>
-    <el-col :span="4" :offset="20">
+  <el-row :gutter="10">
+    <el-col :span="1">
+      <el-button :icon="Refresh" />
+    </el-col>
+    <el-col :span="4" :offset="19">
       <!-- <el-button type="primary" :icon="DocumentAdd" @click="dialogJobFormVisible = true,jobFormMethod='add'">新增</el-button> -->
-      <el-button type="primary" :icon="DocumentAdd" @click="handleJobFormAdd()"
-        >新增</el-button
-      >
+      <el-button type="primary" :icon="DocumentAdd" @click="handleJobFormAdd()">新增</el-button>
     </el-col>
   </el-row>
+
   <el-form>
     <el-table :data="filterTableData" height="250" style="width: 100%">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
-      <el-table-column prop="cron" label="cron" />
+      <!-- <el-table-column prop="cron" label="cron" /> -->
       <el-table-column prop="status" label="status" sortable />
       <el-table-column label="Operations">
         <template #header>
           <el-input
             v-model="search"
             size="small"
-            placeholder="Type to search"
+            placeholder="Type to search name"
           />
         </template>
         <template #default="scope">
@@ -59,7 +61,7 @@
           v-model="jobForm.path"
         />
       </el-form-item>
-      <el-form-item label="cron">
+      <!-- <el-form-item label="cron">
         <cron-element-plus
           v-model="jobForm.cron"
           :periods="cronLightConfig.periods"
@@ -71,7 +73,7 @@
           show-word-limit
           maxlength="30"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="status">
         <el-switch
           v-model="jobFormStatus"
@@ -93,7 +95,7 @@
 </template>
 
 <script setup >
-import { DocumentAdd } from "@element-plus/icons-vue";
+import { Refresh } from "@element-plus/icons-vue";
 import QS from "qs";
 import { ref, reactive, computed, watch, onBeforeMount } from "vue";
 import { queryJob, addJob, editJob, delJob } from "../apis/api.js";
