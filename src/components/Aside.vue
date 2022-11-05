@@ -19,12 +19,12 @@
             </el-icon>
             <template #title>排程管理</template>
         </el-menu-item>
-        <el-menu-item index="/about">
+        <!-- <el-menu-item index="/about">
             <el-icon>
                 <IconInfo />
             </el-icon>
             <template #title>about</template>
-        </el-menu-item>
+        </el-menu-item> -->
     </el-menu>
 </template>
 
