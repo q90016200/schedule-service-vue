@@ -14,7 +14,7 @@
       <el-table-column prop="name" label="name" />
       <el-table-column prop="group" label="group" >
         <template #default="scope">
-          <el-tag :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
+          <el-tag v-if="!scope.row.group" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
             {{ scope.row.group }}
           </el-tag>
         </template>
@@ -281,6 +281,7 @@ const handleJobFormConfirm = () => {
       group: jobForm.group,
       path: jobForm.path,
     });
+    console.log(data)
 
     editJob(jobForm.id, data)
       .then((res) => {
