@@ -9,15 +9,27 @@
   </el-row>
 
   <el-form>
-    <el-table :data="filterjobsData" height="250" style="width: 100%">
+    <el-table ref="refTable" :data="filterJobsData" height="250" style="width: 100%">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
-      <!-- <el-table-column prop="cron" label="cron" /> -->
-      <el-table-column prop="status" label="status" sortable />
+      <el-table-column prop="group" label="group" >
+        <template #default="scope">
+          <el-tag :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
+            {{ scope.row.group }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="status" sortable>
+        <template #default="scope">
+          <el-tag :type="scope.row.status === 'running' ? 'success' : 'danger'" >
+            {{ scope.row.status }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="Operations">
         <template #header>
           <el-input
-            v-model="search"
+            v-model="filterJobName"
             size="small"
             placeholder="Type to search name"
           />
@@ -45,8 +57,8 @@
 
   <!-- 新增/編輯 燈箱 start -->
   <el-dialog v-model="dialogJob.visible" :title="dialogJob.method">
-    <el-form label-width="100px" :model="jobForm" style="max-width: 500px">
-      <el-form-item label="name">
+    <el-form label-width="100px" :model="jobForm" style="max-width: 500px" label-position="left" >
+      <el-form-item label="name" >
         <el-input
           v-model="jobForm.name"
           type="text"
@@ -71,7 +83,13 @@
           type="text"
           show-word-limit
           maxlength="30"
+          style="margin-top: 10px;"
         />
+      </el-form-item>
+      <el-form-item label="group">
+        <el-select v-model="dialogJob.form.group" clearable placeholder="">
+          <el-option v-for="item in jobGroupOptions" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
       <el-form-item label="status">
         <el-switch
@@ -94,10 +112,12 @@
 </template>
 
 <script setup >
-import { Refresh,DocumentAdd } from "@element-plus/icons-vue";
+import { Refresh, DocumentAdd } from "@element-plus/icons-vue";
 import QS from "qs";
 import { ref, reactive, computed, watch, onBeforeMount } from "vue";
 import { queryJob, addJob, editJob, delJob } from "../apis/api.js";
+
+const refTable = ref()
 
 const jobsData = reactive({
   value: [],
@@ -108,8 +128,28 @@ const jobForm = reactive({
   name: "",
   cron: "* * * * *",
   path: "",
+  group: "",
   status: "",
 })
+
+const jobGroupOptions = [
+  {
+    text: 'dev',
+    value: 'dev',
+    label: 'dev',
+  },
+  {
+    text: 'stage',
+    value: 'stage',
+    label: 'stage',
+  },
+  {
+    text: 'prod',
+    value: 'prod',
+    label: 'prod',
+  }
+]
+
 const dialogJob = reactive(
   {
     "visible": false,
@@ -121,13 +161,26 @@ const dialogJob = reactive(
   }
 )
 
-// 依照搜尋文字顯示對應資料 name
-const search = ref("");
-const filterjobsData = computed(() =>
+const filterJobName = ref("");
+const filterJobGroup = ref([]);
+
+const filterJobsData = computed(() =>
   jobsData.value.filter(
-    (data) =>
-      !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase())
+    (data) => {
+      let status = false
+      if (!filterJobName.value || data.name.toLowerCase().includes(filterJobName.value.toLowerCase())) {
+        status = true
+      }
+
+      // if (filterJobGroup.value != "") {
+      //   if (data.group != filterJobGroup.value) {
+      //     status = false
+      //   }
+      // }
+      console.log(status)
+
+      return status
+    }
   )
 );
 
@@ -173,6 +226,7 @@ const handleJobFormAdd = () => {
   jobForm.name = "";
   jobForm.path = "";
   jobForm.cron = "* * * * *";
+  jobForm.group = "";
   jobForm.status = "stopped";
   dialogJob.form_status.status = false;
 };
@@ -184,6 +238,7 @@ const handleJobFormEditDelete = (index, row, method) => {
   jobForm.id = row.id;
   jobForm.name = row.name;
   jobForm.path = row.path;
+  jobForm.group = row.group;
   jobForm.cron = row.cron;
   switch (row.status) {
     case "running":
@@ -206,6 +261,7 @@ const handleJobFormConfirm = () => {
       name: jobForm.name,
       method: "http",
       cron: jobForm.cron,
+      group: jobForm.group,
       path: jobForm.path,
     });
     addJob(data)
@@ -222,6 +278,7 @@ const handleJobFormConfirm = () => {
       name: jobForm.name,
       method: "http",
       cron: jobForm.cron,
+      group: jobForm.group,
       path: jobForm.path,
     });
 
