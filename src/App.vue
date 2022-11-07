@@ -24,7 +24,7 @@ const handleAsideCollapse = () => {
 
 <template>
     <div class="common-layout">
-        <el-container>
+        <el-container style="height: calc(100vh - 76px)">
             <el-header>
                 <HeaderVue />
             </el-header>
