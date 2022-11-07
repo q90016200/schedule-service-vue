@@ -14,12 +14,12 @@
   </el-row>
 
   <el-form>
-    <el-table ref="refTable" :data="filterJobsData" style="width: 100%">
+    <el-table ref="refTable" :data="filterJobsData" style="width: 100%" :loading="jobsData.loading">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
       <el-table-column prop="group" label="group" sortable>
         <template #default="scope">
-          <el-tag v-if="scope.row.group !=''" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
+          <el-tag v-if="scope.row.group !=''" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? '' : 'danger'))">
             {{ scope.row.group }}
           </el-tag>
         </template>
@@ -182,7 +182,7 @@ const filterJobsData = computed(() =>
           status = false
         }
       }
-      console.log(status)
+      // console.log(status)
 
       return status
     }
