@@ -14,7 +14,7 @@
       <el-table-column prop="name" label="name" />
       <el-table-column prop="group" label="group" >
         <template #default="scope">
-          <el-tag v-if="!scope.row.group" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
+          <el-tag v-if="scope.row.group !=''" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
             {{ scope.row.group }}
           </el-tag>
         </template>
