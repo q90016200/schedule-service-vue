@@ -3,16 +3,21 @@
     <el-col :span="1">
       <el-button :icon="Refresh" @click="fetchNewJobs()" :loading="jobsData.loading" />
     </el-col>
-    <el-col :span="4" :offset="19">
+    <el-col :span="3">
+      <el-select v-model="filterJobGroup" clearable placeholder="Select Group">
+        <el-option v-for="item in jobGroupOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+    </el-col>
+    <el-col :span="4" :offset="16">
       <el-button type="primary" :icon="DocumentAdd" @click="handleJobFormAdd()">新增</el-button>
     </el-col>
   </el-row>
 
   <el-form>
-    <el-table ref="refTable" :data="filterJobsData" height="250" style="width: 100%">
+    <el-table ref="refTable" :data="filterJobsData" style="width: 100%">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
-      <el-table-column prop="group" label="group" >
+      <el-table-column prop="group" label="group" sortable>
         <template #default="scope">
           <el-tag v-if="scope.row.group !=''" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? 'success' : 'danger'))">
             {{ scope.row.group }}
@@ -162,7 +167,7 @@ const dialogJob = reactive(
 )
 
 const filterJobName = ref("");
-const filterJobGroup = ref([]);
+const filterJobGroup = ref("");
 
 const filterJobsData = computed(() =>
   jobsData.value.filter(
@@ -172,11 +177,11 @@ const filterJobsData = computed(() =>
         status = true
       }
 
-      // if (filterJobGroup.value != "") {
-      //   if (data.group != filterJobGroup.value) {
-      //     status = false
-      //   }
-      // }
+      if (filterJobGroup.value != "") {
+        if (data.group != filterJobGroup.value) {
+          status = false
+        }
+      }
       console.log(status)
 
       return status
