@@ -14,7 +14,7 @@
   </el-row>
 
   <el-form>
-    <el-table ref="refTable" :data="filterJobsData" style="width: 100%" :loading="jobsData.loading">
+    <el-table ref="refTable" :data="filterJobsData" style="width: 100%" v-loading="jobsData.loading">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
       <el-table-column prop="group" label="group" sortable>
@@ -219,7 +219,7 @@ function fetchNewJobs() {
     }).finally(() => {
       setTimeout(() => {
         jobsData.loading = false
-      }, 200);
+      }, 300);
     });
 }
 
@@ -312,5 +312,8 @@ const handleJobFormConfirm = () => {
 <style>
 .el-row {
   margin-bottom: 20px;
+}
+.el-loading-mask {
+  z-index: 9;
 }
 </style>
