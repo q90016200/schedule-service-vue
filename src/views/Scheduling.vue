@@ -245,6 +245,7 @@ const handleJobFormEditDelete = (index, row, method) => {
   jobForm.path = row.path;
   jobForm.group = row.group;
   jobForm.cron = row.cron;
+  jobForm.status = row.status
   switch (row.status) {
     case "running":
       dialogJob.form_status.status = true;
