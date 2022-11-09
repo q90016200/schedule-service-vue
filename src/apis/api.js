@@ -1,7 +1,7 @@
 // 封裝axios，設置攔截器，統一管理錯誤
 import axios from 'axios'
 
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 10000;
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_HOST,
     headers: {
@@ -85,3 +85,4 @@ export const queryJob = data => instance.get("/api/jobs", data)
 export const addJob = data => instance.post("/api/jobs", data)
 export const editJob = (id, data) => instance.put("/api/jobs/" + id, data)
 export const delJob = (id) => instance.delete("/api/jobs/" + id)
+// export const jobTrigger = (data) => instance.post("/api/jobs/trigger", data)
