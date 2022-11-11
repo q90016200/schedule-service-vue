@@ -25,12 +25,11 @@ const handleAsideCollapse = () => {
 <template>
     <div class="common-layout">
         <el-container style="height: calc(100vh - 76px)">
-            <el-header>
-                <HeaderVue />
-            </el-header>
-
+           <AsideVue :isCollapse="asideCollapse" :defaultActive="asideDefaultActive" />
             <el-container>
-                <AsideVue :isCollapse="asideCollapse" :defaultActive="asideDefaultActive" />
+                <el-header>
+                    <HeaderVue />
+                </el-header>
                 <el-main>
                     <BreadcrumbVue :asideCollapse="asideCollapse" @handleAsideCollapse="handleAsideCollapse" />
                     <el-divider />
