@@ -374,7 +374,7 @@ const handleJobFormConfirm = () => {
 const handleJobFormTrigger = (i, row) => {
   dialogJobTrigger.visible = true;
   dialogJobTrigger.form.path = row.path
-  dialogJobTrigger.form.frequency = 3
+  dialogJobTrigger.form.frequency = 1
   dialogJobTrigger.form.interval = 1000
   dialogJobTrigger.status.excuteBtnDisable = false
 }
