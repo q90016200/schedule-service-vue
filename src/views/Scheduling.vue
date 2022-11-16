@@ -140,7 +140,7 @@
     </el-form>
     <div class="triggerProgress" v-else style="display: flex;justify-content: center;align-items: center;" >
       <el-progress type="dashboard" :percentage="dialogJobTrigger.progress.precent">
-        <template>
+        <template #default="scope">
           <span class="percentage-value">{{dialogJobTrigger.progress.now}}/{{dialogJobTrigger.progress.max}}</span>
           <span class="percentage-label">Progressing</span>
         </template>
