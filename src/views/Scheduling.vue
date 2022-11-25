@@ -127,7 +127,7 @@
 
   <!-- trigger lightbox start -->
   <el-dialog v-model="dialogJobTrigger.visible" :title="dialogJobTrigger.title" :close-on-click-modal=false>
-    <el-form v-if="dialogJobTrigger.status.excuteBtnDisable === false" label-width="100px" style="max-width: 500px" label-position="top">
+    <el-form v-if="dialogJobTrigger.progress.status == 'pending'" label-width="100px" style="max-width: 500px" label-position="top">
       <el-form-item label="Path">
         <el-input v-model="dialogJobTrigger.form.path" />
       </el-form-item>
@@ -149,7 +149,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogJobTrigger.visible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleJobFormTriggerExecute" :disabled="dialogJobTrigger.status.excuteBtnDisable">
+        <el-button type="primary" @click="handleJobFormTriggerExecute" :disabled="dialogJobTrigger.progress.status=='running'">
           Execute
         </el-button>
       </span>
@@ -222,9 +222,7 @@ const dialogJobTrigger = reactive({
     "precent":0,
     "now": 0,
     "max": 0,
-  },
-  "status": {
-    "excuteBtnDisable": false
+    "status": "pending"
   }
 })
 
@@ -376,11 +374,11 @@ const handleJobFormTrigger = (i, row) => {
   dialogJobTrigger.form.path = row.path
   dialogJobTrigger.form.frequency = 1
   dialogJobTrigger.form.interval = 1000
-  dialogJobTrigger.status.excuteBtnDisable = false
+  dialogJobTrigger.progress.status = "pending"
 }
 
 const handleJobFormTriggerExecute = () => {
-  dialogJobTrigger.status.excuteBtnDisable = true
+  dialogJobTrigger.progress.status = "running"
   dialogJobTrigger.progress.max = dialogJobTrigger.form.frequency
   dialogJobTrigger.progress.now = 0
   dialogJobTrigger.progress.precent = 0
@@ -401,7 +399,7 @@ async function request(path, interval, feq) {
       if (precent >= 100) {
         dialogJobTrigger.progress.precent = 100
         setTimeout(() => {
-          
+          dialogJobTrigger.progress.status = "completed"
         }, 300);
       } else {
         dialogJobTrigger.progress.precent = precent
