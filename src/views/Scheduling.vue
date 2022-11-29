@@ -148,10 +148,14 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogJobTrigger.visible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleJobFormTriggerExecute" :disabled="dialogJobTrigger.progress.status=='running'">
-          Execute
-        </el-button>
+        <!-- <el-button @click="dialogJobTrigger.visible = false">Cancel</el-button> -->
+        <div v-if="dialogJobTrigger.progress.status != 'complete'">
+          <el-button color="#626aef" @click="handleJobFormTriggerStop" :disabled="dialogJobTrigger.progress.status =='stopped'">
+            stopped</el-button>
+          <el-button type="primary" @click="handleJobFormTriggerExecute" :disabled="dialogJobTrigger.progress.status!='pending'">
+            Execute
+          </el-button>
+        </div>
       </span>
     </template>
   </el-dialog>
@@ -390,12 +394,19 @@ const handleJobFormTriggerExecute = () => {
   request(path, interval, feq)
 }
 
+const handleJobFormTriggerStop = () => {
+  dialogJobTrigger.progress.status = "stopped"
+
+}
+
 async function request(path, interval, feq) {
   for (let index = 0; index < feq; index++) {
-    axios.get(path).finally(()=>{
+    if (dialogJobTrigger.progress.status == 'stopped') {
+      break
+    }
+    await axios.get(path).finally(()=>{
       dialogJobTrigger.progress.now = (index + 1)
       let precent = (dialogJobTrigger.progress.now / dialogJobTrigger.progress.max) * 100
-      console.log(precent)
       if (precent >= 100) {
         dialogJobTrigger.progress.precent = 100
         setTimeout(() => {
