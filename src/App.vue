@@ -3,6 +3,7 @@ import HeaderVue from './components/Header.vue';
 import AsideVue from './components/Aside.vue';
 import BreadcrumbVue from "./components/Breadcrumb.vue";
 import { onBeforeMount, ref } from 'vue';
+import { useDark, useToggle } from '@vueuse/core'
 
 var asideDefaultActive = ref('/')
 onBeforeMount(() => {
@@ -19,6 +20,9 @@ const handleAsideCollapse = () => {
         asideCollapse.value = true;
     }
 }
+
+// 處理
+const isDark = useDark()
 
 </script>
 
