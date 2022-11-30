@@ -150,7 +150,7 @@
       <span class="dialog-footer">
         <!-- <el-button @click="dialogJobTrigger.visible = false">Cancel</el-button> -->
         <div v-if="dialogJobTrigger.progress.status != 'complete'">
-          <el-button color="#626aef" @click="handleJobFormTriggerStop" :disabled="dialogJobTrigger.progress.status =='stopped'">
+          <el-button color="#626aef" @click="handleJobFormTriggerStop" :disabled="dialogJobTrigger.progress.status !='running'">
             stopped</el-button>
           <el-button type="primary" @click="handleJobFormTriggerExecute" :disabled="dialogJobTrigger.progress.status!='pending'">
             Execute
