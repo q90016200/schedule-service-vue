@@ -142,7 +142,7 @@
       <el-progress type="dashboard" :percentage="dialogJobTrigger.progress.precent">
         <template #default="scope">
           <span class="percentage-value">{{dialogJobTrigger.progress.now}}/{{dialogJobTrigger.progress.max}}</span>
-          <span class="percentage-label">Progressing</span>
+          <span class="percentage-label">{{dialogJobTrigger.progress.status}}</span>
         </template>
       </el-progress>
     </div>
