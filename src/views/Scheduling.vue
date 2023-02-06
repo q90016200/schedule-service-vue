@@ -333,6 +333,7 @@ const handleJobFormConfirm = () => {
       cron: jobForm.cron,
       group: jobForm.group,
       path: jobForm.path,
+      status: jobForm.status,
     });
     addJob(data)
       .then((res) => {
