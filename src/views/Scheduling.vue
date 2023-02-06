@@ -182,7 +182,7 @@ const jobForm = reactive({
   cron: "* * * * *",
   path: "",
   group: "",
-  status: "",
+  status: "stopped",
 })
 
 const jobGroupOptions = [
