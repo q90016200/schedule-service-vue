@@ -55,13 +55,13 @@
             >
             Delete
           </el-button>
-          <el-button
+          <!-- <el-button
             type="warning"
             size="small"
             @click="handleJobFormTrigger(scope.$index, scope.row)"
             >
             Trigger
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -82,10 +82,24 @@
           required="required"
         />
       </el-form-item>
+      <el-form-item label="method">
+        <el-radio-group v-model="jobForm.method">
+          <el-radio label="http">http</el-radio>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="僅支持呼叫方法，不支持帶入參數"
+            placement="top"
+          >
+            <el-radio label="grpc">gRPC</el-radio>
+          </el-tooltip>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-if="jobForm.method == 'grpc'" label="consul">
+          <el-input v-model="jobForm.consul" show-word-limit maxlength="255"/>
+      </el-form-item>
       <el-form-item label="path">
-        <el-input
-          v-model="jobForm.path"
-        />
+        <el-input v-model="jobForm.path" />
       </el-form-item>
       <el-form-item label="cron">
         <cron-element-plus
@@ -179,7 +193,9 @@ const jobsData = reactive({
 const jobForm = reactive({
   id: 0,
   name: "",
+  method:"http",
   cron: "* * * * *",
+  consul:"",
   path: "",
   group: "",
   status: "stopped",
@@ -293,6 +309,8 @@ const handleJobFormAdd = () => {
 
   jobForm.id = 0;
   jobForm.name = "";
+  jobForm.method = "http";
+  jobForm.consul = "";
   jobForm.path = "";
   jobForm.cron = "* * * * *";
   jobForm.group = "";
@@ -305,8 +323,15 @@ const handleJobFormEditDelete = (index, row, method) => {
   dialogJob.method = method;
 
   jobForm.id = row.id;
-  jobForm.name = row.name;
-  jobForm.path = row.path;
+  jobForm.name = row.name.trim();
+  jobForm.method = row.method;
+  if (row.method == "grpc") {
+    jobForm.consul = row.consul.trim();
+  } else {
+    jobForm.consul = "";
+  }
+
+  jobForm.path = row.path.trim();
   jobForm.group = row.group;
   jobForm.cron = row.cron;
   jobForm.status = row.status
@@ -328,11 +353,12 @@ const handleJobFormConfirm = () => {
 
   if (dialogJob.method == "add") {
     let data = QS.stringify({
-      name: jobForm.name,
-      method: "http",
+      name: jobForm.name.trim(),
+      method: jobForm.method,
       cron: jobForm.cron,
       group: jobForm.group,
-      path: jobForm.path,
+      consul: jobForm.consul.trim(),
+      path: jobForm.path.trim(),
       status: jobForm.status,
     });
     addJob(data)
@@ -346,13 +372,14 @@ const handleJobFormConfirm = () => {
   } else if (dialogJob.method == "edit") {
     let data = QS.stringify({
       status: jobForm.status,
-      name: jobForm.name,
-      method: "http",
+      name: jobForm.name.trim(),
+      method: jobForm.method,
+      consul: jobForm.consul.trim(),
       cron: jobForm.cron,
       group: jobForm.group,
-      path: jobForm.path,
+      path: jobForm.path.trim(),
     });
-    console.log(data)
+    // console.log(data)
 
     editJob(jobForm.id, data)
       .then((res) => {

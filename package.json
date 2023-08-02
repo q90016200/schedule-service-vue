@@ -17,7 +17,8 @@
     "element-plus": "^2.2.19",
     "qs": "^6.11.0",
     "vue": "^3.2.37",
-    "vue-router": "^4.1.2"
+    "vue-router": "^4.1.2",
+    "volar-service-vetur": "latest"
   },
   "devDependencies": {
     "@types/node": "^18.8.5",
