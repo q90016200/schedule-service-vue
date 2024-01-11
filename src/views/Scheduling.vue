@@ -99,13 +99,14 @@
           <el-input v-model="jobForm.consul" show-word-limit maxlength="255"/>
       </el-form-item>
       <el-form-item label="path">
-        <el-input v-model="jobForm.path" />
+        <el-input v-model="jobForm.path" placeholder="consul://{ip}:{port}/xxxrpc.rpc?wait=30s	" />
       </el-form-item>
       <el-form-item label="cron">
         <cron-element-plus
           v-model="jobForm.cron"
           :periods="cronInputConfig.periods"
           :button-props="{ type: 'primary' }"
+          placeholder="/xxx.xxxrpc/BetLogGrabberAll"
         />
         <el-input
           v-model="jobForm.cron"
