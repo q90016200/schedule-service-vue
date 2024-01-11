@@ -17,6 +17,7 @@
     <el-table ref="refTable" :data="filterJobsData" style="width: 100%" v-loading="jobsData.loading">
       <el-table-column prop="id" label="id" sortable />
       <el-table-column prop="name" label="name" />
+      <el-table-column prop="cron" label="cron" />
       <el-table-column prop="group" label="group" sortable>
         <template #default="scope">
           <el-tag v-if="scope.row.group !=''" :type="(scope.row.group === 'dev' ? 'info' : (scope.row.group === 'stage' ? '' : 'danger'))">
@@ -96,17 +97,19 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item v-if="jobForm.method == 'grpc'" label="consul">
-          <el-input v-model="jobForm.consul" show-word-limit maxlength="255"/>
+          <el-input v-model="jobForm.consul" show-word-limit maxlength="255" placeholder="consul://{ip}:{port}/xxxrpc.rpc?wait=30s	"/>
       </el-form-item>
+
       <el-form-item label="path">
-        <el-input v-model="jobForm.path" placeholder="consul://{ip}:{port}/xxxrpc.rpc?wait=30s	" />
+        <el-input v-if="jobForm.method == 'grpc'" v-model="jobForm.path" placeholder="/xxx.xxxrpc/BetLogGrabberAll" />
+        <el-input v-if="jobForm.method == 'http'" v-model="jobForm.path" placeholder="http://xxxxxxxx" />
       </el-form-item>
+
       <el-form-item label="cron">
         <cron-element-plus
           v-model="jobForm.cron"
           :periods="cronInputConfig.periods"
           :button-props="{ type: 'primary' }"
-          placeholder="/xxx.xxxrpc/BetLogGrabberAll"
         />
         <el-input
           v-model="jobForm.cron"
